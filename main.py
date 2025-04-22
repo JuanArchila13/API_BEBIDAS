@@ -1,9 +1,18 @@
 from fastapi import FastAPI, HTTPException
 from models.drink import Drink
+from fastapi.middleware.cors import CORSMiddleware
 
 from db import session
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.post("/menu")
 async def create_drink(name: str, size: str, price: float):
