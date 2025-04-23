@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 url = URL.create(
     drivername="mysql+pymysql",
     username="root",
-    password="",
+    password="123456789",
     host="localhost",
     database="drinks_db",    
     port=3306,
