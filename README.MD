@@ -6,3 +6,6 @@ uvicorn main:app --reload
 
 pip install pytest
 pip install httpx
+pip install mypy
+pip install pylint
+pip install coverage
