@@ -1,3 +1,8 @@
+"""
+    Conexión con la base de datos MySQL 
+    utilizando SQLAlchemy.
+"""
+
 from sqlalchemy import create_engine
 from sqlalchemy.engine import URL
 from sqlalchemy.orm import sessionmaker
@@ -7,7 +12,7 @@ url = URL.create(
     username="root",
     password="123456789",
     host="localhost",
-    database="drinks_db",    
+    database="drinks_db",
     port=3306,
 )
 
