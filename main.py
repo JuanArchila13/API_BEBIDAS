@@ -21,6 +21,53 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/menu")
+async def obtain_menu():
+    """
+    Obtiene la lista de todas las bebidas en el menú.
+
+    Returns:
+        list: Lista de objetos Drink que representan las bebidas en el menú.
+    """
+    drinks = session.query(Drink).all()
+    return drinks
+
+# @app.get("/menu")
+# async def obtain_menu():
+#     return [
+#         {"name": "Sprite", "size": "12 Oz", "price": 13000},
+#         {"name": "Coca-Cola", "size": "8 Oz", "price": 8000},
+#         {"name": "Pepsi", "size": "14 Oz", "price": 15000},
+#         {"name": "Manzana Postobon", "size": "6 Oz", "price": 5000},
+#     ]
+
+
+@app.get("/menu/{name}")
+async def obtain_drink(name: str):
+    """
+    Obtiene una bebida específica del menú a partir de un nombre.
+
+    Args:
+        name (str): Nombre de la bebida a buscar.
+
+    Raises:
+        HTTPException: Si la bebida no se encuentra en el menú.
+
+    Returns:
+        dict: Objeto Drink con los datos de la bebida solicitada.
+    """
+    drink = session.query(Drink).filter(Drink.name == name).first()
+    if not drink:
+        raise HTTPException(status_code=404, detail="Drink not found")
+    return drink
+
+# @app.get("/menu/{name}")
+# async def obtain_drink(name: str):
+#     return {
+#         "name": "Coca-Cola",
+#         "size": "10 Oz",
+#         "price": 12000
+#     }
 
 @app.post("/menu")
 async def create_drink(drink: DrinkDTO):
@@ -47,34 +94,13 @@ async def create_drink(drink: DrinkDTO):
     session.commit()
     return {"message": "Drink created successfully", "drink": drink}
 
-
-@app.get("/menu")
-async def obtain_menu():
-    """
-    Obtiene la lista de todas las bebidas en el menú.
-
-    Returns:
-        list: Lista de objetos Drink que representan las bebidas en el menú.
-    """
-    drinks = session.query(Drink).all()
-    return drinks
-
-
-@app.get("/menu/{name}")
-async def obtain_drink(name: str):
-    """
-    Obtiene una bebida específica del menú a partir de un nombre.
-
-    Args:
-        name (str): Nombre de la bebida a buscar.
-
-    Raises:
-        HTTPException: Si la bebida no se encuentra en el menú.
-
-    Returns:
-        dict: Objeto Drink con los datos de la bebida solicitada.
-    """
-    drink = session.query(Drink).filter(Drink.name == name).first()
-    if not drink:
-        raise HTTPException(status_code=404, detail="Drink not found")
-    return drink
+# @app.post("/menu")
+# async def create_drink(drink: DrinkDTO):
+#     return {
+#         "message": "Drink created successfully",
+#         "drink": {
+#             "name": "Pepsi",
+#             "size": "12 Oz",
+#             "price": 6000
+#         }
+#     }
