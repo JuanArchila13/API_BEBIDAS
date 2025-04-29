@@ -86,7 +86,7 @@ async def create_drink(drink: DrinkDTO):
     """
     if drink.name == "":
         raise HTTPException(status_code=400, detail="Name cannot be empty")
-    if drink.price < 0:
+    if drink.price <= 0:
         raise HTTPException(status_code=400, detail="Price must be greater than 0")
 
     drink = Drink(name=drink.name, size=drink.size, price=drink.price)
