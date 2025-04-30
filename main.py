@@ -38,7 +38,7 @@ async def obtain_menu():
 #         {"name": "Sprite", "size": "12 Oz", "price": 13000},
 #         {"name": "Coca-Cola", "size": "8 Oz", "price": 8000},
 #         {"name": "Pepsi", "size": "14 Oz", "price": 15000},
-#         {"name": "Manzana Postobon", "size": "6 Oz", "price": 5000},
+#         {"name": "Manzana Postobon", "size": "6 Oz", "price": 5000},mypy models/drink.py test_main.py
 #     ]
 
 
