@@ -6,9 +6,7 @@ Este modulo contiene la configuracion de la API, las rutas y los controladores p
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from models.drink import Drink
-
 from dto.drink_dto import DrinkDTO
-
 from db import session
 
 app = FastAPI()
@@ -32,16 +30,6 @@ async def obtain_menu():
     drinks = session.query(Drink).all()
     return drinks
 
-# @app.get("/menu")
-# async def obtain_menu():
-#     return [
-#         {"name": "Sprite", "size": "12 Oz", "price": 13000},
-#         {"name": "Coca-Cola", "size": "8 Oz", "price": 8000},
-#         {"name": "Pepsi", "size": "14 Oz", "price": 15000},
-#         {"name": "Manzana Postobon", "size": "6 Oz", "price": 5000},mypy models/drink.py test_main.py
-#     ]
-
-
 @app.get("/menu/{name}")
 async def obtain_drink(name: str):
     """
@@ -60,14 +48,6 @@ async def obtain_drink(name: str):
     if not drink:
         raise HTTPException(status_code=404, detail="Drink not found")
     return drink
-
-# @app.get("/menu/{name}")
-# async def obtain_drink(name: str):
-#     return {
-#         "name": "Coca-Cola",
-#         "size": "10 Oz",
-#         "price": 12000
-#     }
 
 @app.post("/menu")
 async def create_drink(drink: DrinkDTO):
@@ -89,18 +69,7 @@ async def create_drink(drink: DrinkDTO):
     if drink.price <= 0:
         raise HTTPException(status_code=400, detail="Price must be greater than 0")
 
-    drink = Drink(name=drink.name, size=drink.size, price=drink.price)
-    session.add(drink)
+    drink_to_create = Drink(name=drink.name, size=drink.size, price=drink.price)
+    session.add(drink_to_create)
     session.commit()
-    return {"message": "Drink created successfully", "drink": drink}
-
-# @app.post("/menu")
-# async def create_drink(drink: DrinkDTO):
-#     return {
-#         "message": "Drink created successfully",
-#         "drink": {
-#             "name": "Pepsi",
-#             "size": "12 Oz",
-#             "price": 6000
-#         }
-#     }
+    return {"message": "Drink created successfully", "drink": drink_to_create}

@@ -9,7 +9,25 @@ Este documento contiene el reporte del análisis estático realizado al proyecto
 - **Coverage.py**: Para medir la cobertura de pruebas.
 
 ## Reporte Realizado con Pylint
-Las siguientes son algunas de las advertencias identificadas y corregidas usando la herramienta de **Pylint**
+**Pylint** es una herramienta de análisis estático de código para Python que verifica la calidad del código, asegurándose de que cumpla con las convenciones de estilo definidas en PEP 8 (guía oficial de estilo para python).
+
+Entre algunas de las advertencias que pylint identifica se encuentran errores comunes como variables no utilizadas, importaciones incorrectas o mal ordenadas, problemas de diseño como clases con demasiados métodos o funciones demasiado complejas, entre otros.
+
+Por otro lado, para poder ejecutar pylint en un proyecto de python, es necesario instalar con el gestor de librerias pip la dependencia de pylint, como se puede ver en el siguiente comando:
+
+```
+pip install pylint
+```
+
+Posteriormente, se puede ejcutar el siguinte comando en la consola para llevar a cabo el análisis estático del código con pylint:
+
+```
+pylint main.py test_main.py db.py models/ dto/ -> Se colocan los nombres de los modulos y los paquetes a los cuales se les quiere analizar el código con pylint.
+```
+
+En la siguiente imagen se pueden ver las advertencias encontradas en la calidad del código, junto con una calificación global del mismo:
+
+![alt text](image-10.png)
 
 ### **- Módulo main:**
 
@@ -23,7 +41,7 @@ main.py:1:0: C0114: Missing module docstring (missing-module-docstring)
 
 La anterior advertencia se corrigio agregando un comentario (docstring) al principio del módulo main:
 
-![alt text](static_analysis_images/image-1.png)
+![alt text](image-1.png)
 
 También se agregaron los comentarios correspondientes a cada uno de los métodos que hay en el módulo main, siguiendo un proceso similar al mencionado anteriormente.
 
@@ -42,7 +60,8 @@ main.py:3:0: C0411: third party import "fastapi.middleware.cors.CORSMiddleware" 
 ```
 
 La corrección a la anterior advertencia se puede ver en la siguiente imagen:
-![alt text](static_analysis_images/image-2.png)
+
+![alt text](image-2.png)
 
 **3. Ungrouped-imports:**
 
@@ -54,7 +73,7 @@ main.py:3:0: C0412: Imports from package fastapi are not grouped (ungrouped-impo
 
 La corrección de la anterior advertencia se hizó de la siguiente forma.
 
-![alt text](static_analysis_images/image-3.png)
+![alt text](image-3.png)
 
 ### **- Módulo db:**
 
@@ -106,13 +125,71 @@ models\drink.py:7:0: R0903: Too few public methods (0/2) (too-few-public-methods
 
 La forma en la que se desactivo la advertencia fue la siguiente:
 
-![alt text](static_analysis_images/image-4.png)
+![alt text](image-4.png)
+
+Por último, al volver a ejecutar el comando de pylint, se obtuvo el siguiente resultado:
+
+![alt text](image-11.png)
 
 ## Reporte Realizado con Mypy
-Las siguientes son algunas de las advertencias identificadas y corregidas usando la herramienta de **Pylint**
+**Mypy** es una herramienta de análisis estático de código para Python que verifica la consistencia de tipos en el código, y aunque este lenguaje de programación tiene un tipado dinámico, es posible agregar anotaciones de tipo al código y verificar que los tipos sean consistentes en el tiempo de desarrollo.
+
+Así mismo, esta permite detectar errores antes de ejecutar el código, contribuyendo a la mejora de la calidad y mantenibilidad de un proyecto.
+
+Para poder ejecutar mypy en un proyecto de python, es necesario instalar con el gestor de librerias pip la dependencia de mypy, como se puede ver en el siguiente comando:
+
+```
+pip install mypy
+```
+
+Luego de haber instalado la dependencia de mypy, se puede ejecutar el análisis de la consistencia de tipos en el código con el siguiente comando:
+
+```
+mypy main.py models/ db.py dto/ test_main.py -> Se deben de colocar todas los archivos y carpetas en los que se quiere analizar la consitencia de tipos en el código
+
+mypy --explicit-package-bases main.py models/ db.py dto/ test_main.py -> Si se desea que mypy interprete que cada carpeta del proyecto es un paquete específico, se debe de usar este comando.
+```
+
+El resultado obtenido del análisis se muestra por consola, como se puede ver en la siguiente imagen:
+
+![alt text](image-5.png)
+
+### **- Módulo models/drink**:
+
+**1. Variable is not valid as a type [valid-type]:**
+
+Este error se presente debido a que mypy no reconoce la clase Base como un tipo válido, esto a causa de que SQLAlchemy utiliza una clase dinámica para definir esta clase, por lo que, no es compatible con el sistema de tipos de mypy.
+
+```
+models\drink.py:12: error: Variable "models.drink.Base" is not valid as a type  [valid-type]
+models\drink.py:12: note: See https://mypy.readthedocs.io/en/stable/common_issues.html#variables-vs-type-aliases
+models\drink.py:12: error: Invalid base class "Base"  [misc]
+```
+
+El código que se tiene actualmente es el siguiente:
+
+![alt text](image-6.png)
+
+La forma en que se corrigio el error es la siguiente:
+
+![alt text](image-7.png)
+
+De esta forma la clase Base se define como una clase de tipo estático.
+
+### **Reglas desactivadas**:
+
+**1. Cannot assign to a method [method-assign]:**
+
+Esta error se presenta porque en el archivo test_main.py se esta intentando asignar un valor a un método, sin embargo, la forma en que se esta asignando el objeto MagicMock al session.query es correcta, por lo que se decidió desactivar la regla de la siguiente forma:
+
+![alt text](image-9.png)
+
+Por último, al volver a ejecutar el comando de mypy, no se encontraron mas erorres de consistencia de tipos: 
+
+![alt text](image-8.png)
 
 ## Reporte Realizado con Coverage-py
-Coverage.py es una herramienta de análisis estático de código que permite verificar que partes del código han sido ejecutadas durante la ejecución de pruebas y cuales no, permitiendo identificar las áreas del código que no se están probando.
+**Coverage.py**es una herramienta de análisis estático de código que permite verificar que partes del código han sido ejecutadas durante la ejecución de pruebas y cuales no, permitiendo identificar las áreas del código que no se están probando.
 
 Para instalar esta herramienta en un proyecto de python se puede hacer uso del gestor de librerias pip, como se puede ver a continuación:
 
@@ -135,24 +212,16 @@ coverage report
 
 **- Exportar un archivo html con los resultados de la ejecución:**
 
+Para poder visualizar los resultados del análisis de cobertura con el archivo html, se debe de abrir la carpeta htmlcov y dentro de esta abrir en un navegador el archivo index.html, de esta forma se cargaran todos los estilos y la información del reporte generado.
+
 ```
 coverage html
 ```
 
 El resultado obtenido de la ejecución se puede observar en la siguiente tabla:
 
-Name                 Stmts   Miss  Cover
-----------------------------------------
-db.py                    7      0   100%
-dto\drink_dto.py         5      0   100%
-main.py                 27      0   100%
-models\__init__.py       0      0   100%
-models\drink.py         11      0   100%
-test_main.py            41      0   100%
-----------------------------------------
-TOTAL                   91      0   100%
+![alt text](image.png)
 
 En esta tabla la columna **Name** se refiere al nombre del archivo que fue analizado, **Stmts** (Staments) es el número total de sentencias (líneas de código ejecutable) que hay en el archivo, **Miss** es el número de sentencias que no fueron ejecutadas durante todas las pruebas de pytest, y **Cover** es el porcentaje de cobertura del código ejecutable, es decir, el porcentaje de sentencias ejecutadas durante las pruebas.
 
 Los resultados obtenidos de la prueba de cobertura es que de las 91 sentencias de código ejecutable que fueron analizadas, el 100% fueron ejecutadas con las pruebas, esto también se debe a que ya se han implementado las sugerencias hechas por pylint y mypy.
-

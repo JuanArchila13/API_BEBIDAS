@@ -4,10 +4,11 @@
 """
 
 from sqlalchemy import Column, Integer, String, Float
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.orm import DeclarativeBase
 from db import engine
 
-Base = declarative_base()
+class Base(DeclarativeBase):
+    pass
 
 class Drink(Base): # pylint: disable=too-few-public-methods
     """
