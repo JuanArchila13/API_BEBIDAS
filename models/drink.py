@@ -7,8 +7,14 @@ from sqlalchemy import Column, Integer, String, Float
 from sqlalchemy.orm import DeclarativeBase
 from db import engine
 
-class Base(DeclarativeBase):
-    pass
+class Base(DeclarativeBase): # pylint: disable=too-few-public-methods
+    """
+    Clase base para la declaración de modelos de SQLAlchemy.
+    Esta clase hereda de DeclarativeBase y se utiliza para definir la estructura
+
+    Args:
+        DeclarativeBase (_type_): Clase base de SQLAlchemy para la declaración de modelos.
+    """
 
 class Drink(Base): # pylint: disable=too-few-public-methods
     """

@@ -1,6 +1,7 @@
 """ 
 Modulo principal de la API de bebidas.
-Este modulo contiene la configuracion de la API, las rutas y los controladores para manejar las solicitudes HTTP.
+Este modulo contiene la configuracion de la API, las rutas y los controladores 
+para manejar las solicitudes HTTP.
 """
 
 from fastapi import FastAPI, HTTPException
